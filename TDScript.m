@@ -1,3 +1,10 @@
+<<<<<<< Updated upstream
+=======
+% comment
+
+clear all
+clc
+>>>>>>> Stashed changes
 
 load("TrackingData.mat")
 ModifiedTrackingData;
