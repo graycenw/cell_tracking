@@ -16,5 +16,7 @@ ModifiedTrackingData(~TimePointTotals,:)=[]; %removes data with less than x time
 Change=diff(ModifiedTrackingData.particledetectiont);
 TrueChange=Change<0;
 TrueChange(1)=1;
+%This makes it so that the true values are the first timepoints so we would
+%subtract those from the other values, but I don't know how to do that
 
 
