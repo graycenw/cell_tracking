@@ -12,3 +12,9 @@ ModifiedTrackingData(Mtrue,:)=[]; %removes columns with M(whole number)
 x=12;
 TimePointTotals=ModifiedTrackingData.particlenSpots>=x;
 ModifiedTrackingData(~TimePointTotals,:)=[]; %removes data with less than x time points
+
+Change=diff(ModifiedTrackingData.particledetectiont);
+TrueChange=Change<0;
+TrueChange(1)=1;
+
+
