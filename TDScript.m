@@ -18,35 +18,36 @@ ModifiedTrackingData(~TimePointTotals,:)=[]; %removes data with less than x time
 CellChange=ischange(ModifiedTrackingData.particleid); %finds changes in particleid
 ModifiedTrackingData.deltax=double(CellChange);
 ModifiedTrackingData.deltax(1)=1; 
-
-isChangexIND=[1;find(diff(ModifiedTrackingData.particleid))+1];
+ 
+isChangexIND=[1;find(diff(ModifiedTrackingData.particleid))+1]; %index when id changes
 for i=1:(length(isChangexIND)-1)
     IND1=isChangexIND(i);
-    IND2=isChangexIND(i+1)-1;
+    IND2=isChangexIND(i+1)+12;
     
     
     ModifiedTrackingData.deltax(IND1:IND2)=ModifiedTrackingData.particledetectionx(IND1:IND2)-ModifiedTrackingData.particledetectionx(IND1);
     %difference between particle x and original x positions
 end
-
+ 
 ModifiedTrackingData.deltay=double(CellChange);
 ModifiedTrackingData.deltay(1)=1;
-
+ 
 isChangeyIND=[1;find(diff(ModifiedTrackingData.particleid))+1];
 for i=1:(length(isChangeyIND)-1)
     IND1=isChangeyIND(i);
-    IND2=isChangeyIND(i+1)-1;
+    IND2=isChangeyIND(i+1)+12;
     
     
     ModifiedTrackingData.deltay(IND1:IND2)=ModifiedTrackingData.particledetectiony(IND1:IND2)-ModifiedTrackingData.particledetectiony(IND1);
     %difference between particle y and original y positions
 end
-
+ 
 ModifiedTrackingData.deltax(ModifiedTrackingData.deltax==0)=nan;
 delta2x=diff(ModifiedTrackingData.deltax); delta2x(isnan(delta2x))=0; 
-
+ 
 ModifiedTrackingData.deltay(ModifiedTrackingData.deltay==0)=nan;
 delta2y=diff(ModifiedTrackingData.deltay); delta2y(isnan(delta2y))=0;
+ 
+ModifiedTrackingData.deltaposition=sqrt(delta2x.^2+delta2y.^2);
 
-deltaposition=sqrt(delta2x.^2+delta2y.^2);
 
