@@ -54,7 +54,7 @@ ModifiedTrackingData.deltapos=[0;deltaposition];
 
 zeroIND=ModifiedTrackingData.deltax==0;
 for i=1:(length(zeroIND))
-    ModifiedTrackingData.deltapos(zeroIND)=0; 
-    %makes the first timepoint of each cell have deltapos of 0
+    ModifiedTrackingData.deltapos(zeroIND)=NaN; 
+    %makes the first timepoint of each cell have deltapos of NaN
 end
 
