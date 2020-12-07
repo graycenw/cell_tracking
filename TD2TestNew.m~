@@ -1,0 +1,64 @@
+
+
+MTD=readtable('Copy of TrackingData (2).xlsx');
+
+MTD.Properties.VariableNames(1:14)={'FrameInterval' 'FrameIntervalAgg' 'from' 'DateTime' 'nTracks' 'nTracksAgg' 'SpaceUnits' 'TimeUnits' 'ParticlenSpots' 'ParticleId' 'ParticleDetectiont' 'ParticleDetectionx' 'ParticleDetectiony' 'ParticleDetectionz'};
+
+Lremainders=rem(MTD.ParticleDetectionx,1);
+Ltrue=(Lremainders==0); 
+MTD(Ltrue,:)=[]; %removes columns with L(whole number)
+
+Mremainders=rem(MTD.ParticleDetectiony,1);
+Mtrue=(Mremainders==0);
+MTD(Mtrue,:)=[]; %removes columns with M(whole number)
+
+x=12;
+TimePointTotals=MTD.ParticlenSpots>=x;
+MTD(~TimePointTotals,:)=[]; %removes data with less than x time points
+
+CellChange=ischange(MTD.ParticleId); %finds changes in particleid
+MTD.Deltax=double(CellChange);
+MTD.Deltax(1)=1; 
+y=nnz(MTD.ParticleId==(max(MTD.ParticleId)))-1;
+%y is leftover cells that don't get included in the loops below
+ 
+isChangexIND=[1;find(diff(MTD.ParticleId))+1]; %index when id changes
+for i=1:(length(isChangexIND)-1)
+    IND1=isChangexIND(i);
+    IND2=isChangexIND(i+1)+y;
+    
+    
+    MTD.Deltax(IND1:IND2)=MTD.ParticleDetectionx(IND1:IND2)-MTD.ParticleDetectionx(IND1);
+    %difference between particle x and original x positions
+end
+ 
+MTD.Deltay=double(CellChange);
+MTD.Deltay(1)=1;
+ 
+isChangeyIND=[1;find(diff(MTD.ParticleId))+1];
+for i=1:(length(isChangeyIND)-1)
+    IND1=isChangeyIND(i);
+    IND2=isChangeyIND(i+1)+y;
+    
+    
+    MTD.Deltay(IND1:IND2)=MTD.ParticleDetectiony(IND1:IND2)-MTD.ParticleDetectiony(IND1);
+    %difference between particle y and original y positions
+end
+ 
+MTD.Deltax(MTD.Deltax==0)=0;
+delta2x=diff(MTD.Deltax);  delta2x(isnan(delta2x))=0;
+
+MTD.Deltay(MTD.Deltay==0)=0;
+delta2y=diff(MTD.Deltay); delta2y(isnan(delta2y))=0;
+
+deltaposition=sqrt(delta2x.^2+delta2y.^2);
+MTD.DeltaPos=[0;deltaposition];
+
+MTD.Deltax(end-y)=0;
+
+zeroIND=MTD.Deltax==0;
+for i=1:(length(zeroIND))
+    MTD.DeltaPos(zeroIND)=0; 
+    %makes the first timepoint of each cell have deltapos of 0
+end
+
